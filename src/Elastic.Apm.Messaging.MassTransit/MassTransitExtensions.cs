@@ -22,7 +22,7 @@ namespace Elastic.Apm.Messaging.MassTransit
                 tracingData);
             context.Headers.Set(
                 Constants.MessageSourceHeader,
-                context.DestinationAddress.AbsolutePath);
+                context.DestinationAddress?.AbsolutePath ?? string.Empty);
             context.Headers.Set(
                 Constants.ReceiveResponseHeader,
                 $"{isResponse}",
@@ -59,7 +59,7 @@ namespace Elastic.Apm.Messaging.MassTransit
             return context.TransportHeaders.TryGetHeader(Constants.MessageResponseHeader, out _);
         }
 
-        internal static bool TryGetMessageResponse(this Headers headers, [NotNullWhen(true)]out string? value)
+        internal static bool TryGetMessageResponse(this Headers headers, [NotNullWhen(true)] out string? value)
         {
             value = default;
             var hasHeader = headers.TryGetHeader(Constants.MessageResponseHeader, out var rawValue);
@@ -87,12 +87,12 @@ namespace Elastic.Apm.Messaging.MassTransit
 
         internal static string GetMessageSource(this ReceiveContext context)
         {
-            return context.TransportHeaders.Get<string>(Constants.MessageSourceHeader);
+            return context.TransportHeaders.Get<string>(Constants.MessageSourceHeader) ?? string.Empty;
         }
 
         internal static string GetSpanSubType(this SendContext context)
         {
-            var scheme = context.DestinationAddress.Scheme;
+            var scheme = context.DestinationAddress?.Scheme ?? string.Empty;
 
             return SchemeToSubType.TryGetValue(scheme, out var value) ? value : scheme;
         }

@@ -6,7 +6,7 @@ namespace Elastic.Apm.Messaging.MassTransit
     public class MassTransitDiagnosticOptions
     {
         private readonly Func<SendContext, string> _defaultSendLabel =
-            context => context.DestinationAddress.AbsolutePath;
+            context => context.DestinationAddress?.AbsolutePath ?? string.Empty;
 
         private readonly Func<ReceiveContext, string> _defaultReceiveLabel =
             context =>

@@ -97,16 +97,16 @@ namespace Elastic.Apm.Messaging.MassTransit
                     Uri? address = isSendingResponse ? sendContext.SourceAddress : sendContext.DestinationAddress;
                     span.Context.Destination = new Destination
                     {
-                        Address = sendContext.DestinationAddress.AbsoluteUri,
+                        Address = sendContext.DestinationAddress?.AbsoluteUri ?? string.Empty,
                         Service = new Destination.DestinationService
                         {
-                            Resource = $"{subType}{address.AbsolutePath}"
+                            Resource = $"{subType}{address?.AbsolutePath ?? string.Empty}"
                         }
                     };
 
                     span.Context.Message = new Message
                     {
-                        Queue = new Queue { Name = address.GetAbsoluteName() }
+                        Queue = new Queue { Name = address?.GetAbsoluteName() ?? string.Empty }
                     };
 
                     sendContext.SetTracingData(span, isSendingResponse);
